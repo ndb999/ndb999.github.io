@@ -1,183 +1,198 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="zh-Hans">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-    
-    <title>在Django中使用线程池 | Ryo Memo</title>
-
-    <meta name="description" content="Ryo Memo">
-    <meta name="keywords" content="">
-
-    
-
-    <meta property="og:locale" content="zh-cn" />
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content= "在Django中使用线程池 | Ryo Memo"  />
-    <meta property="og:description" content= "Ryo Memo" />
-    <meta property="og:url" content="http://example.com/2022/08/18/%E5%9C%A8Django%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%BA%BF%E7%A8%8B%E6%B1%A0/index.html" />
-    <meta property="og:site_name" content="" />
-    <meta property="article:author" content="Ryo" />
-    <meta property="article:publisher" content="" />
-    <meta property="og:description" content="Ryo Memo" />
-    <meta name="twitter:title" content="在Django中使用线程池 | Ryo Memo"/>
-    <meta name="twitter:description" content="Ryo Memo"/>
-    <script type="application/ld+json">
-        {
-            "description": "Ryo Memo",
-            "author": { "@type": "Person", "name": "Ryo" },
-            "@type": "BlogPosting",
-            "url": "http://example.com/2022/08/18/%E5%9C%A8Django%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%BA%BF%E7%A8%8B%E6%B1%A0/index.html",
-            "publisher": {
-            "@type": "Organization",
-            "logo": {
-                "@type": "ImageObject",
-                "url": "http://example.comundefined"
-            },
-            "name": "Ryo"
-            },
-            "headline": "在Django中使用线程池 | Ryo Memo",
-            "datePublished": "2022-08-18T14:19:33.000Z",
-            "mainEntityOfPage": {
-                "@type": "WebPage",
-                "@id": "http://example.com/2022/08/18/%E5%9C%A8Django%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%BA%BF%E7%A8%8B%E6%B1%A0/index.html"
-            },
-            "@context": "http://schema.org"
-        }
-    </script>
+<link rel="stylesheet" href="/css/main.css">
 
 
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ndb999.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="注意本次修改只是一次尝试，并未实际应用于生产环境。本文可能存在错误和误区。 场景项目中每次接收到Http Request时，需要进行数据库插入处理。如果进行同步保存，则可能使Response变慢，于是使用线程（Thread）进行异步保存。在得知每次都创建线程会使系统开销变大，于是决定尝试使用线程池（ThreadPoolExecutor）。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在Django中使用线程池">
+<meta property="og:url" content="https://ndb999.github.io/2022/08/18/%E5%9C%A8Django%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%BA%BF%E7%A8%8B%E6%B1%A0/index.html">
+<meta property="og:site_name" content="Ryo Memo">
+<meta property="og:description" content="注意本次修改只是一次尝试，并未实际应用于生产环境。本文可能存在错误和误区。 场景项目中每次接收到Http Request时，需要进行数据库插入处理。如果进行同步保存，则可能使Response变慢，于是使用线程（Thread）进行异步保存。在得知每次都创建线程会使系统开销变大，于是决定尝试使用线程池（ThreadPoolExecutor）。">
+<meta property="og:locale">
+<meta property="article:published_time" content="2022-08-18T14:19:33.000Z">
+<meta property="article:modified_time" content="2022-08-19T07:21:31.791Z">
+<meta property="article:author" content="Ryo">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ndb999.github.io/2022/08/18/%E5%9C%A8Django%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%BA%BF%E7%A8%8B%E6%B1%A0/">
 
 
-    
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-<link rel="stylesheet" href="/dist/build.css?v=1654266144177.css">
+  <title>在Django中使用线程池 | Ryo Memo</title>
+  
 
 
-    
-<link rel="stylesheet" href="/dist/custom.css?v=1654266144177.css">
 
 
-    <script>
-        window.isPost = true
-        window.aomori = {
-            
-            
-            
-        }
-        window.aomori_logo_typed_animated = false
-        window.aomori_search_algolia = false
 
-    </script>
 
-<meta name="generator" content="Hexo 6.2.0"></head>
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
 
-<body>
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
 
-    <div class="container">
-    <header class="header">
-        <div class="header-type">
-            
-            <div class="header-type-inner">
-                
-                    <a class="header-type-title" href="/">Ryo Memo</a>
-                
-    
-                
-            </div>
-        </div>
-        <div class="header-menu">
-            <div class="header-menu-inner">
-                
-            </div>
-            <div class="header-menu-social">
-                
-            </div>
-        </div>
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
 
-        <div class="header-menu-mobile">
-            <div class="header-menu-mobile-inner" id="mobile-menu-open">
-                <i class="icon icon-menu"></i>
-            </div>
-        </div>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Ryo Memo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
     </header>
 
-    <div class="header-menu-mobile-menu">
-        <div class="header-menu-mobile-menu-bg"></div>
-        <div class="header-menu-mobile-menu-wrap">
-            <div class="header-menu-mobile-menu-inner">
-                <div class="header-menu-mobile-menu-close" id="mobile-menu-close">
-                    <i class="icon icon-cross"></i>
-                </div>
-                <div class="header-menu-mobile-menu-list">
-                    
-                </div>
-            </div>
-        </div>
-    </div>
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
 
-</div>
 
-    <div class="container">
-        <div class="main">
-            <section class="inner">
-                <section class="inner-main">
-                    <div class="mysql">
-    <article id="mysql-cl6z63lcp0001a8b73xwbdu1x" class="article article-type-mysql" itemscope
-    itemprop="blogPost">
-
-    <div class="article-inner">
-
-        
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
           
-        
-        
-        
 
-        
-        <header class="article-header">
+          <div class="content post posts-expand">
             
+
+    
   
-    <h1 class="article-title" itemprop="name">
-      在Django中使用线程池
-    </h1>
   
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://ndb999.github.io/2022/08/18/%E5%9C%A8Django%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%BA%BF%E7%A8%8B%E6%B1%A0/">
 
-        </header>
-        
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ryo">
+      <meta itemprop="description" content="">
+    </span>
 
-        <div class="article-more-info article-more-info-mysql hairline">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ryo Memo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          在Django中使用线程池
+        </h1>
 
-            <div class="article-date">
-  <time datetime="2022-08-18T14:19:33.000Z" itemprop="datePublished">2022-08-18</time>
-</div>
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
 
-            
+              <time title="Created: 2022-08-18 23:19:33" itemprop="dateCreated datePublished" datetime="2022-08-18T23:19:33+09:00">2022-08-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-08-19 16:21:31" itemprop="dateModified" datetime="2022-08-19T16:21:31+09:00">2022-08-19</time>
+              </span>
 
-            
-
-            
+          
 
         </div>
+      </header>
 
-        <div class="article-entry post-inner-html hairline" itemprop="articleBody">
-            <h1 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h1><p>本次修改只是一次尝试，并未实际应用于生产环境。本文可能存在错误和误区。</p>
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h1><p>本次修改只是一次尝试，并未实际应用于生产环境。本文可能存在错误和误区。</p>
 <h1 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h1><p>项目中每次接收到Http Request时，需要进行数据库插入处理。如果进行同步保存，则可能使Response变慢，于是使用线程（Thread）进行异步保存。在得知每次都创建线程会使系统开销变大，于是决定尝试使用线程池（ThreadPoolExecutor）。</p>
+<span id="more"></span>
+
 <h1 id="运行环境"><a href="#运行环境" class="headerlink" title="运行环境"></a>运行环境</h1><ul>
 <li>Django 3.0.6</li>
 <li>Python 3.8</li>
@@ -191,154 +206,131 @@
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p>本文参考了这位大神的文章</p>
 <p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/luozx207/p/12048986.html">参考连接</a></p>
 
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/08/18/Workbench%E8%AE%BF%E9%97%AE%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%ADMySQL/" rel="prev" title="Workbench访问虚拟机中MySQL">
+      <i class="fa fa-chevron-left"></i> Workbench访问虚拟机中MySQL
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
         </div>
-
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-<nav class="article-nav">
+          
   
-  
-    <a href="/2022/08/18/Workbench%E8%AE%BF%E9%97%AE%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%ADMySQL/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-caption">上一篇</div>
-      <div class="article-nav-title">Workbench访问虚拟机中MySQL</div>
-    </a>
-  
-</nav>
-
-
-    <section class="share">
-        <div class="share-title">分享</div>
-        <a class="share-item" target="_blank"
-            href="https://twitter.com/share?text=在Django中使用线程池 - Ryo Memo&url=http%3A%2F%2Fexample.com%2F2022%2F08%2F18%2F%25E5%259C%25A8Django%25E4%25B8%25AD%25E4%25BD%25BF%25E7%2594%25A8%25E7%25BA%25BF%25E7%25A8%258B%25E6%25B1%25A0%2F">
-            <ion-icon name="logo-twitter"></ion-icon>
-        </a>
-        <a class="share-item" target="_blank"
-            href="https://www.facebook.com/sharer.php?title=在Django中使用线程池 - Ryo Memo&u=http%3A%2F%2Fexample.com%2F2022%2F08%2F18%2F%25E5%259C%25A8Django%25E4%25B8%25AD%25E4%25BD%25BF%25E7%2594%25A8%25E7%25BA%25BF%25E7%25A8%258B%25E6%25B1%25A0%2F">
-            <ion-icon name="logo-facebook"></ion-icon>
-        </a>
-        <!-- <a class="share-item" target="_blank"
-            href="https://service.weibo.com/share/share.php?title=在Django中使用线程池 - Ryo Memo&url=http://example.com/2022/08/18/%E5%9C%A8Django%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%BA%BF%E7%A8%8B%E6%B1%A0/&pic=">
-            <div class="n-icon n-icon-weibo"></div>
-        </a> -->
-    </section>
-
-</article>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
-                </section>
-            </section>
-
-            
-            <aside class="sidebar ">
-                
-
-
-<div class="widget" id="widget">
-    
-      
-  <div class="widget-wrap">
-    <div class="widget-inner">
-      <div class="toc post-toc-html"></div>
-    </div>
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
   </div>
 
-    
-      
+  <aside class="sidebar">
+    <div class="sidebar-inner">
 
-    
-      
-
-    
-      
-  <div class="widget-wrap widget-recent-posts">
-    <div class="widget-title"><span>Recent Posts</span></div>
-    <div class="widget-inner">
-      <ul>
-        
-          <li>
-            <a href="/2022/08/18/%E5%9C%A8Django%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%BA%BF%E7%A8%8B%E6%B1%A0/">在Django中使用线程池</a>
-          </li>
-        
-          <li>
-            <a href="/2022/08/18/Workbench%E8%AE%BF%E9%97%AE%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%ADMySQL/">Workbench访问虚拟机中MySQL</a>
-          </li>
-        
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
       </ul>
-    </div>
-  </div>
 
-    
-      
-  <div class="widget-wrap widget-archive">
-    <div class="widget-title"><span>Archive</span></div>
-    <div class="widget-inner">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a></li></ul>
-    </div>
-  </div>
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F"><span class="nav-number">1.</span> <span class="nav-text">注意</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF"><span class="nav-number">2.</span> <span class="nav-text">场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83"><span class="nav-number">3.</span> <span class="nav-text">运行环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E4%B8%BA%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%B9%8B%E5%89%8D%E7%9A%84%E4%BB%A3%E7%A0%81"><span class="nav-number">4.</span> <span class="nav-text">修改为线程池之前的代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E5%88%B6%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BB%A3%E7%A0%81"><span class="nav-number">5.</span> <span class="nav-text">自制线程池代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">6.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
 
-
-    
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ryo</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
 </div>
 
-<div id="backtop"><i class="icon icon-arrow-up"></i></div>
-            </aside>
-            
-        </div>
+
+
+      </div>
+
     </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
 
     <footer class="footer">
-    <div class="footer-wave">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#3c4859" fill-opacity="1" d="M0,160L60,181.3C120,203,240,245,360,240C480,235,600,181,720,186.7C840,192,960,256,1080,261.3C1200,267,1320,213,1380,186.7L1440,160L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path></svg>
-    </div>
+      <div class="footer-inner">
+        
 
-    <!-- Please do not remove this -->
-    <!-- 开源不易，请勿删除 -->
-    <div class="footer-wrap">
-        <div class="footer-inner"> 
-            Ryo Memo &copy; 2022<br>
-            Powered By Hexo · Theme By <a href="https://linhong.me/" target="_blank">Aomori</a> · <a href="https://github.com/lh1me/hexo-theme-aomori" target="_blank">Github</a>
-        </div>
-    </div>
+        
 
-</footer>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ryo</span>
+</div>
 
-<script type="module" src="https://unpkg.com/ionicons@6.0.2/dist/ionicons/ionicons.esm.js"></script>
-
-
-
-
-
-
-<script src="/dist/build.js?1654266144177.js"></script>
-
-
-<script src="/dist/custom.js?1654266144177.js"></script>
+        
 
 
 
@@ -347,11 +339,47 @@
 
 
 
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
 
 
 
 
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
 
 </body>
-
 </html>
