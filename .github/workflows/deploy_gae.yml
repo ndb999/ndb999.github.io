@@ -1,0 +1,33 @@
+name: Deploy to AppEngine
+
+on: push
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  deploy:
+    runs-on: ubuntu-last
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup app.yml
+      - run: |
+          cp ./app ./app.yaml
+          rm ./app
+          mkdir www
+          mv !(app.yaml) www
+
+      - name: Gcloud Auth
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Deploy to AppEngine
+        uses: google-github-actions/deploy-appengine@v0
+        with:
+          working_directory: ./
+          deliverables: app.yaml
+          promote: true
