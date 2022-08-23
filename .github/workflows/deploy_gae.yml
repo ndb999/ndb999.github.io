@@ -17,9 +17,8 @@ jobs:
         run: |
           cp ./app ./app.yaml
           rm ./app
-          mkdir www
           shopt -s extglob
-          mv !(app.yaml) www
+          mv !(app.yaml) ./www
 
       - name: Gcloud Auth
         uses: google-github-actions/auth@v0
