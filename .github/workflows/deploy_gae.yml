@@ -32,3 +32,4 @@ jobs:
           working_directory: ./
           deliverables: app.yaml
           promote: true
+          version: blog
