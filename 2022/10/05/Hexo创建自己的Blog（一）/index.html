@@ -20,19 +20,23 @@
     var CONFIG = {"hostname":"ndb999.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="使用PageNumberPagination分页">
+  <meta name="description" content="场景使用Hexo和GitHub Page创建自己的博客。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="DRF使用PageNumberPagination分页">
-<meta property="og:url" content="https://ndb999.github.io/2022/09/04/DRF%E4%BD%BF%E7%94%A8PageNumberPagination%E5%88%86%E9%A1%B5/index.html">
+<meta property="og:title" content="Hexo创建自己的Blog（一）">
+<meta property="og:url" content="https://ndb999.github.io/2022/10/05/Hexo%E5%88%9B%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84Blog%EF%BC%88%E4%B8%80%EF%BC%89/index.html">
 <meta property="og:site_name" content="Ryo Memo">
-<meta property="og:description" content="使用PageNumberPagination分页">
+<meta property="og:description" content="场景使用Hexo和GitHub Page创建自己的博客。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-09-04T04:53:58.000Z">
-<meta property="article:modified_time" content="2022-09-04T04:54:31.616Z">
+<meta property="article:published_time" content="2022-10-05T08:43:13.000Z">
+<meta property="article:modified_time" content="2022-10-05T08:45:14.712Z">
 <meta property="article:author" content="Ryo">
+<meta property="article:tag" content="GitHub">
+<meta property="article:tag" content="GitHub Page">
+<meta property="article:tag" content="Hexo">
+<meta property="article:tag" content="Blog">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://ndb999.github.io/2022/09/04/DRF%E4%BD%BF%E7%94%A8PageNumberPagination%E5%88%86%E9%A1%B5/">
+<link rel="canonical" href="https://ndb999.github.io/2022/10/05/Hexo%E5%88%9B%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84Blog%EF%BC%88%E4%B8%80%EF%BC%89/">
 
 
 <script id="page-configurations">
@@ -45,7 +49,7 @@
   };
 </script>
 
-  <title>DRF使用PageNumberPagination分页 | Ryo Memo</title>
+  <title>Hexo创建自己的Blog（一） | Ryo Memo</title>
   
 
 
@@ -160,7 +164,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ndb999.github.io/2022/09/04/DRF%E4%BD%BF%E7%94%A8PageNumberPagination%E5%88%86%E9%A1%B5/">
+    <link itemprop="mainEntityOfPage" href="https://ndb999.github.io/2022/10/05/Hexo%E5%88%9B%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84Blog%EF%BC%88%E4%B8%80%EF%BC%89/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -173,7 +177,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          DRF使用PageNumberPagination分页
+          Hexo创建自己的Blog（一）
         </h1>
 
         <div class="post-meta">
@@ -184,7 +188,16 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2022-09-04 13:53:58 / 修改时间：13:54:31" itemprop="dateCreated datePublished" datetime="2022-09-04T13:53:58+09:00">2022-09-04</time>
+              <time title="创建时间：2022-10-05 17:43:13 / 修改时间：17:45:14" itemprop="dateCreated datePublished" datetime="2022-10-05T17:43:13+09:00">2022-10-05</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Web%E5%90%8E%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">Web后端</span></a>
+                </span>
             </span>
 
           
@@ -198,16 +211,30 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="使用PageNumberPagination分页"><a href="#使用PageNumberPagination分页" class="headerlink" title="使用PageNumberPagination分页"></a>使用PageNumberPagination分页</h2><span id="more"></span>
+        <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>使用Hexo和GitHub Page创建自己的博客。</p>
+<span id="more"></span>
 
-<h3 id="编写分页器文件"><a href="#编写分页器文件" class="headerlink" title="编写分页器文件"></a>编写分页器文件</h3><p><strong>pagination.py</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">from rest_framework.pagination import PageNumberPagination</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class ExamplePagination(PageNumberPagination):</span><br><span class="line">    page_size = 10 # 每页显示多少条</span><br><span class="line">    page_size_query_param = &quot;size&quot; # URL中使用size参数作为每页显示条数的参数</span><br><span class="line">    page_query_param = &quot;page&quot; # URL中使用page参数作为显示第几页的参数</span><br><span class="line">    max_page_size = 10 # 每页最多显示多少条</span><br></pre></td></tr></table></figure>
+<h2 id="创建GitHub-Page"><a href="#创建GitHub-Page" class="headerlink" title="创建GitHub Page"></a>创建GitHub Page</h2><p>GitHub会自动识别被命名为<code>your-user-name.github.io</code>的Repository为GitHub Page。<br>在Repository中添加<code>index.html</code>，其中的内容会被自动设定成主页的内容。</p>
+<p>另外，刚被创建的GitHub Page可能要等一会才能看到。</p>
+<h2 id="创建个人Token"><a href="#创建个人Token" class="headerlink" title="创建个人Token"></a>创建个人Token</h2><p>为了将本地的内容发布到GitHub Page，需要申请一个GitHub Personal Access Token。<br>参照下面的文档进行生成，并暂存。</p>
+<p><a target="_blank" rel="noopener" href="https://docs.github.com/cn/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token">https://docs.github.com/cn/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token</a></p>
+<h2 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h2><p>参照Hexo官方网站。</p>
+<p><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/">https://hexo.io/zh-cn/</a></p>
+<p>Hexo需要使用nodejs环境，所以要事先安装nodejs。</p>
+<p><a target="_blank" rel="noopener" href="https://nodejs.org/en/">https://nodejs.org/en/</a></p>
+<h2 id="初始化Hexo"><a href="#初始化Hexo" class="headerlink" title="初始化Hexo"></a>初始化Hexo</h2><p>参照下面的文档初始化Hexo。</p>
+<p><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/setup">https://hexo.io/zh-cn/docs/setup</a></p>
+<h2 id="安装-hexo-deployer-git"><a href="#安装-hexo-deployer-git" class="headerlink" title="安装 hexo-deployer-git"></a>安装 hexo-deployer-git</h2><p>最好使用最新版的node和npm，否则容易发生异常</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
 
-<h3 id="在View里面追加分页器"><a href="#在View里面追加分页器" class="headerlink" title="在View里面追加分页器"></a>在View里面追加分页器</h3><p><strong>views.py</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">from .pagination import ExamplePagination</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class ExampleView(generics.ListAPIView):</span><br><span class="line">    serializer_class = ExampleSerializer</span><br><span class="line">    pagination_class = ExamplePagination</span><br></pre></td></tr></table></figure>
+<h2 id="配置-config-yml文件"><a href="#配置-config-yml文件" class="headerlink" title="配置_config.yml文件"></a>配置_config.yml文件</h2><p>配置Hexo的<code>_config.yml</code>文件，在最后添加以下内容。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: https://github.com/your-user-name/your-user-name.github.io</span><br><span class="line">  branch: main</span><br><span class="line">  token: 刚才暂存的Token</span><br></pre></td></tr></table></figure>
 
-<h3 id="URL"><a href="#URL" class="headerlink" title="URL"></a>URL</h3><p>这个URL表示查询tester列表的第三页，每页显示15行。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://example.com/api/tester/?page=3&amp;size=15</span><br></pre></td></tr></table></figure>
+<h2 id="将Hexo发布到GitHub"><a href="#将Hexo发布到GitHub" class="headerlink" title="将Hexo发布到GitHub"></a>将Hexo发布到GitHub</h2><p>在当前工程路径下执行以下命令。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean &amp;&amp; hexo deploy</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/github-pages">https://hexo.io/zh-cn/docs/github-pages</a></p>
+
     </div>
 
     
@@ -215,6 +242,12 @@
     
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/GitHub/" rel="tag"># GitHub</a>
+              <a href="/tags/GitHub-Page/" rel="tag"># GitHub Page</a>
+              <a href="/tags/Hexo/" rel="tag"># Hexo</a>
+              <a href="/tags/Blog/" rel="tag"># Blog</a>
+          </div>
 
         
 
@@ -222,13 +255,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/08/30/Git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/" rel="prev" title="Git学习笔记（一）">
-      <i class="fa fa-chevron-left"></i> Git学习笔记（一）
+    <a href="/2022/10/05/DRF%E5%8E%8B%E7%BC%A9%E5%A4%9A%E4%B8%AAZip%E6%96%87%E4%BB%B6%E5%B9%B6%E4%B8%8B%E8%BD%BD/" rel="prev" title="DRF压缩多个Zip文件并下载">
+      <i class="fa fa-chevron-left"></i> DRF压缩多个Zip文件并下载
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2022/10/05/DRF%E5%8E%8B%E7%BC%A9%E5%A4%9A%E4%B8%AAZip%E6%96%87%E4%BB%B6%E5%B9%B6%E4%B8%8B%E8%BD%BD/" rel="next" title="DRF压缩多个Zip文件并下载">
-      DRF压缩多个Zip文件并下载 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -287,7 +317,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8PageNumberPagination%E5%88%86%E9%A1%B5"><span class="nav-number">1.</span> <span class="nav-text">使用PageNumberPagination分页</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E5%88%86%E9%A1%B5%E5%99%A8%E6%96%87%E4%BB%B6"><span class="nav-number">1.1.</span> <span class="nav-text">编写分页器文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8View%E9%87%8C%E9%9D%A2%E8%BF%BD%E5%8A%A0%E5%88%86%E9%A1%B5%E5%99%A8"><span class="nav-number">1.2.</span> <span class="nav-text">在View里面追加分页器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#URL"><span class="nav-number">1.3.</span> <span class="nav-text">URL</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAGitHub-Page"><span class="nav-number">2.</span> <span class="nav-text">创建GitHub Page</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%AA%E4%BA%BAToken"><span class="nav-number">3.</span> <span class="nav-text">创建个人Token</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Hexo"><span class="nav-number">4.</span> <span class="nav-text">安装Hexo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96Hexo"><span class="nav-number">5.</span> <span class="nav-text">初始化Hexo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-hexo-deployer-git"><span class="nav-number">6.</span> <span class="nav-text">安装 hexo-deployer-git</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-config-yml%E6%96%87%E4%BB%B6"><span class="nav-number">7.</span> <span class="nav-text">配置_config.yml文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86Hexo%E5%8F%91%E5%B8%83%E5%88%B0GitHub"><span class="nav-number">8.</span> <span class="nav-text">将Hexo发布到GitHub</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">9.</span> <span class="nav-text">参考</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
